@@ -3,6 +3,15 @@ import { DealCard } from "@/components/deals/DealCard";
 import { Button } from "@/components/ui/button";
 import { Plus, Filter, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { Slider } from "@/components/ui/slider";
 
 const mockDeals = [
   {
@@ -57,10 +66,27 @@ const Index = () => {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input placeholder="Search deals..." className="pl-10" />
           </div>
-          <Button variant="outline">
-            <Filter className="h-4 w-4 mr-2" />
-            Filter
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">
+                <Filter className="h-4 w-4 mr-2" />
+                Filter
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-64">
+              <DropdownMenuLabel>Filter Deals</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Deal Stage: LOI, Due Diligence, Underwriting, Closing</DropdownMenuItem>
+              <DropdownMenuItem>Property Type: Office, Industrial, Mixed Use</DropdownMenuItem>
+              <DropdownMenuItem>
+                Days to Close:
+                <div className="px-2 py-1">
+                  <Slider min={0} max={120} defaultValue={[0, 120]} step={1} />
+                </div>
+              </DropdownMenuItem>
+              <DropdownMenuItem>Lead Contact: Sarah Johnson, Robert Kim, etc.</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

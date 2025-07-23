@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const mainNavItems = [
   { title: "Dashboard", url: "/", icon: Home },
@@ -48,6 +49,9 @@ export function AppSidebar() {
   const location = useLocation();
   const currentPath = location.pathname;
   const [searchQuery, setSearchQuery] = useState("");
+  const [showNewDeal, setShowNewDeal] = useState(false);
+  const [showAddTask, setShowAddTask] = useState(false);
+  const [showScheduleMeeting, setShowScheduleMeeting] = useState(false);
 
   const isCollapsed = state === "collapsed";
   const isActive = (path: string) => currentPath === path;
@@ -98,20 +102,63 @@ export function AppSidebar() {
             <SidebarGroupLabel>Quick Actions</SidebarGroupLabel>
             <SidebarGroupContent>
               <div className="grid grid-cols-1 gap-2 px-4">
-                {quickActions.map((action) => (
-                  <Button
-                    key={action.title}
-                    variant="outline"
-                    size="sm"
-                    className="justify-start"
-                    asChild
-                  >
-                    <NavLink to={action.url}>
-                      <action.icon className="h-4 w-4 mr-2" />
-                      {action.title}
-                    </NavLink>
-                  </Button>
-                ))}
+                <Dialog open={showNewDeal} onOpenChange={setShowNewDeal}>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="justify-start"
+                      onClick={() => setShowNewDeal(true)}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      New Deal
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>New Deal (Coming Soon)</DialogTitle>
+                    </DialogHeader>
+                    <div className="text-muted-foreground">Deal creation form will go here.</div>
+                  </DialogContent>
+                </Dialog>
+                <Dialog open={showAddTask} onOpenChange={setShowAddTask}>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="justify-start"
+                      onClick={() => setShowAddTask(true)}
+                    >
+                      <CheckSquare className="h-4 w-4 mr-2" />
+                      Add Task
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Add Task (Coming Soon)</DialogTitle>
+                    </DialogHeader>
+                    <div className="text-muted-foreground">Task creation form will go here.</div>
+                  </DialogContent>
+                </Dialog>
+                <Dialog open={showScheduleMeeting} onOpenChange={setShowScheduleMeeting}>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="justify-start"
+                      onClick={() => setShowScheduleMeeting(true)}
+                    >
+                      <Calendar className="h-4 w-4 mr-2" />
+                      Schedule Meeting
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Schedule Meeting (Coming Soon)</DialogTitle>
+                    </DialogHeader>
+                    <div className="text-muted-foreground">Meeting scheduling form will go here.</div>
+                  </DialogContent>
+                </Dialog>
               </div>
             </SidebarGroupContent>
           </SidebarGroup>
