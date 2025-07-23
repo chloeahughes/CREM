@@ -22,11 +22,16 @@ export default {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
-				background: 'hsl(var(--background))',
+				background: {
+					DEFAULT: 'hsl(var(--background))',
+					subtle: 'hsl(var(--background-subtle))',
+					muted: 'hsl(var(--background-muted))'
+				},
 				foreground: 'hsl(var(--foreground))',
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
+					foreground: 'hsl(var(--primary-foreground))',
+					hover: 'hsl(var(--primary-hover))'
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
@@ -51,6 +56,19 @@ export default {
 				card: {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
+				},
+				status: {
+					pending: 'hsl(var(--status-pending))',
+					progress: 'hsl(var(--status-progress))',
+					review: 'hsl(var(--status-review))',
+					completed: 'hsl(var(--status-completed))',
+					urgent: 'hsl(var(--status-urgent))'
+				},
+				stage: {
+					loi: 'hsl(var(--stage-loi))',
+					'due-diligence': 'hsl(var(--stage-due-diligence))',
+					underwriting: 'hsl(var(--stage-underwriting))',
+					closing: 'hsl(var(--stage-closing))'
 				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',

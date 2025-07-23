@@ -1,13 +1,79 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { AppLayout } from "@/components/layout/AppLayout";
+import { DealCard } from "@/components/deals/DealCard";
+import { Button } from "@/components/ui/button";
+import { Plus, Filter, Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
+
+const mockDeals = [
+  {
+    id: "123-market-st",
+    propertyName: "123 Market Street",
+    address: "123 Market St, San Francisco, CA",
+    propertyType: "Office",
+    stage: "due-diligence" as const,
+    dealValue: 85000000,
+    targetCloseDate: new Date("2024-03-15"),
+    daysUntilClose: 23,
+    leadContact: "Sarah Johnson",
+    tasksCompleted: 18,
+    totalTasks: 34,
+    urgentTasks: 3,
+    team: ["Sarah Johnson", "Mike Chen", "Emily Davis"],
+  },
+  {
+    id: "tower-plaza",
+    propertyName: "Tower Plaza",
+    address: "456 Financial District, SF, CA",
+    propertyType: "Mixed Use",
+    stage: "underwriting" as const,
+    dealValue: 120000000,
+    targetCloseDate: new Date("2024-04-30"),
+    daysUntilClose: 67,
+    leadContact: "Robert Kim",
+    tasksCompleted: 8,
+    totalTasks: 28,
+    urgentTasks: 1,
+    team: ["Robert Kim", "Jennifer Wu"],
+  },
+];
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <AppLayout>
+      <div className="p-6">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-3xl font-bold">Deal Dashboard</h1>
+            <p className="text-muted-foreground">Manage your commercial real estate transactions</p>
+          </div>
+          <Button>
+            <Plus className="h-4 w-4 mr-2" />
+            New Deal
+          </Button>
+        </div>
+
+        <div className="flex items-center space-x-4 mb-6">
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input placeholder="Search deals..." className="pl-10" />
+          </div>
+          <Button variant="outline">
+            <Filter className="h-4 w-4 mr-2" />
+            Filter
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {mockDeals.map((deal) => (
+            <DealCard
+              key={deal.id}
+              deal={deal}
+              onClick={() => window.location.href = `/deals/${deal.id}`}
+            />
+          ))}
+        </div>
       </div>
-    </div>
+    </AppLayout>
   );
 };
 
