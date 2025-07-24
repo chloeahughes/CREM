@@ -29,6 +29,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useAppDemo } from '../AppDemoContext';
+import { Select } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { Calendar as CalendarIcon } from 'lucide-react';
+import { Calendar } from '@/components/ui/calendar';
+import { format } from 'date-fns';
 
 const mainNavItems = [
   { title: "Dashboard", url: "/", icon: Home },
@@ -52,6 +58,19 @@ export function AppSidebar() {
   const [showNewDeal, setShowNewDeal] = useState(false);
   const [showAddTask, setShowAddTask] = useState(false);
   const [showScheduleMeeting, setShowScheduleMeeting] = useState(false);
+
+  const { users, deals, tasks, addTask } = useAppDemo();
+  const [taskForm, setTaskForm] = useState({
+    name: '',
+    assignee: '',
+    dueDate: '',
+    project: '',
+    dependencies: [],
+    description: '',
+    platform: '',
+  });
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [formError, setFormError] = useState('');
 
   const isCollapsed = state === "collapsed";
   const isActive = (path: string) => currentPath === path;
@@ -135,9 +154,126 @@ export function AppSidebar() {
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Add Task (Coming Soon)</DialogTitle>
+                      <DialogTitle>Add Task</DialogTitle>
                     </DialogHeader>
-                    <div className="text-muted-foreground">Task creation form will go here.</div>
+                    <form
+                      className="space-y-4"
+                      onSubmit={e => {
+                        e.preventDefault();
+                        if (!taskForm.name || !taskForm.assignee || !taskForm.dueDate || !taskForm.project) {
+                          setFormError('Please fill in all required fields.');
+                          return;
+                        }
+                        addTask({
+                          name: taskForm.name,
+                          assignee: taskForm.assignee,
+                          dueDate: taskForm.dueDate,
+                          project: taskForm.project,
+                          status: 'Open',
+                          dependencies: taskForm.dependencies,
+                          description: taskForm.description,
+                          platform: taskForm.platform,
+                        });
+                        setTaskForm({ name: '', assignee: '', dueDate: '', project: '', dependencies: [], description: '', platform: '' });
+                        setShowAddTask(false);
+                        setFormError('');
+                      }}
+                    >
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Task Name *</label>
+                        <Input
+                          value={taskForm.name}
+                          onChange={e => setTaskForm(f => ({ ...f, name: e.target.value }))}
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Assignee *</label>
+                        <Select
+                          value={taskForm.assignee}
+                          onValueChange={v => setTaskForm(f => ({ ...f, assignee: v }))}
+                        >
+                          <option value="" disabled>Select assignee</option>
+                          {users.map(u => (
+                            <option key={u.id} value={u.name}>{u.name}</option>
+                          ))}
+                        </Select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Due Date *</label>
+                        <div className="flex items-center gap-2">
+                          <Input
+                            value={taskForm.dueDate ? format(new Date(taskForm.dueDate), 'yyyy-MM-dd') : ''}
+                            readOnly
+                            onClick={() => setShowDatePicker(v => !v)}
+                            placeholder="Select date"
+                            className="cursor-pointer"
+                            required
+                          />
+                          <Button type="button" variant="ghost" size="icon" onClick={() => setShowDatePicker(v => !v)}>
+                            <CalendarIcon className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        {showDatePicker && (
+                          <div className="z-10 bg-background border rounded shadow p-2 mt-2">
+                            <Calendar
+                              mode="single"
+                              selected={taskForm.dueDate ? new Date(taskForm.dueDate) : undefined}
+                              onSelect={date => {
+                                setTaskForm(f => ({ ...f, dueDate: date ? date.toISOString().slice(0, 10) : '' }));
+                                setShowDatePicker(false);
+                              }}
+                            />
+                          </div>
+                        )}
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Projects *</label>
+                        <Select
+                          value={taskForm.project}
+                          onValueChange={v => setTaskForm(f => ({ ...f, project: v }))}
+                        >
+                          <option value="" disabled>Select project</option>
+                          {deals.map(d => (
+                            <option key={d.id} value={d.name}>{d.name}</option>
+                          ))}
+                        </Select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Dependencies</label>
+                        <Select
+                          multiple
+                          value={taskForm.dependencies}
+                          onValueChange={v => setTaskForm(f => ({ ...f, dependencies: v }))}
+                        >
+                          {tasks.map(t => (
+                            <option key={t.id} value={t.name}>{t.name}</option>
+                          ))}
+                        </Select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Description</label>
+                        <Textarea
+                          value={taskForm.description}
+                          onChange={e => setTaskForm(f => ({ ...f, description: e.target.value }))}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Platform</label>
+                        <Select
+                          value={taskForm.platform}
+                          onValueChange={v => setTaskForm(f => ({ ...f, platform: v }))}
+                        >
+                          <option value="">Select platform</option>
+                          <option value="Excel">Excel</option>
+                          <option value="Google Sheets">Google Sheets</option>
+                          <option value="Notion">Notion</option>
+                          <option value="Upload Custom">Upload Custom</option>
+                        </Select>
+                      </div>
+                      {formError && <div className="text-red-500 text-sm">{formError}</div>}
+                      <Button type="submit" className="w-full mt-2">Create Task</Button>
+                    </form>
                   </DialogContent>
                 </Dialog>
                 <Dialog open={showScheduleMeeting} onOpenChange={setShowScheduleMeeting}>
