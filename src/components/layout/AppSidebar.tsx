@@ -44,6 +44,7 @@ const mainNavItems = [
   { title: "My Tasks", url: "/tasks", icon: CheckSquare },
   { title: "Team Activity", url: "/activity", icon: Activity },
   { title: "Shared Files", url: "/files", icon: FileText },
+  { title: "Schedule Meeting", url: "/calendar", icon: Calendar },
 ];
 
 const quickActions = [
