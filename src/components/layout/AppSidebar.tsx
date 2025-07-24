@@ -63,26 +63,26 @@ export function AppSidebar() {
 
   const { users, deals, tasks, addTask, addDeal, addMeeting } = useAppDemo();
   const [taskForm, setTaskForm] = useState({
-    name: '',
-    assignee: '',
-    dueDate: '',
-    project: '',
-    dependencies: [],
-    description: '',
-    platform: '',
+    name: 'Draft PSA (Purchase Sale Agreement)',
+    assignee: 'Robert Kim',
+    dueDate: '2025-08-05',
+    project: 'Tower Plaza',
+    dependencies: ['Submit LOI'],
+    description: 'Coordinate with legal to draft and circulate PSA for review.',
+    platform: 'Google Docs',
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [formError, setFormError] = useState('');
 
   const [dealForm, setDealForm] = useState({
-    name: '',
-    address: '',
-    type: '',
-    value: '',
-    status: '',
-    expectedClose: '',
-    leadContact: '',
-    team: [],
+    name: 'Parkside Logistics Center',
+    address: '8410 Grand Avenue, Oakland, CA',
+    type: 'Industrial',
+    value: '42000000',
+    status: 'LOI',
+    expectedClose: '2025-10-15',
+    leadContact: 'Sarah Johnson',
+    team: ['Chloe Hughes', 'Robert Kim', 'Noah Lee'],
   });
   const [dealFormError, setDealFormError] = useState('');
   const [showDealDatePicker, setShowDealDatePicker] = useState(false);

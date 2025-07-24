@@ -12,6 +12,11 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Slider } from "@/components/ui/slider";
+import { useAppDemo } from '../components/AppDemoContext';
+import { Badge } from '../components/ui/badge';
+import { Avatar } from '../components/ui/avatar';
+import { useMemo } from 'react';
+import { differenceInCalendarDays, parseISO } from 'date-fns';
 
 const mockDeals = [
   {
@@ -47,59 +52,40 @@ const mockDeals = [
 ];
 
 const Index = () => {
+  const { deals, tasks, users } = useAppDemo();
+  const today = new Date();
   return (
-    <AppLayout>
-      <div className="p-6">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-3xl font-bold">Deal Dashboard</h1>
-            <p className="text-muted-foreground">Manage your commercial real estate transactions</p>
-          </div>
-          <Button>
-            <Plus className="h-4 w-4 mr-2" />
-            New Deal
-          </Button>
-        </div>
-
-        <div className="flex items-center space-x-4 mb-6">
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Search deals..." className="pl-10" />
-          </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">
-                <Filter className="h-4 w-4 mr-2" />
-                Filter
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-64">
-              <DropdownMenuLabel>Filter Deals</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Deal Stage: LOI, Due Diligence, Underwriting, Closing</DropdownMenuItem>
-              <DropdownMenuItem>Property Type: Office, Industrial, Mixed Use</DropdownMenuItem>
-              <DropdownMenuItem>
-                Days to Close:
-                <div className="px-2 py-1">
-                  <Slider min={0} max={120} defaultValue={[0, 120]} step={1} />
+    <div className="p-8 max-w-6xl mx-auto">
+      <h2 className="text-2xl font-bold mb-6">All Deals</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {deals.map(deal => {
+          const dealTasks = tasks.filter(t => t.project === deal.name);
+          const completed = dealTasks.filter(t => t.status === 'Complete').length;
+          const daysToClose = differenceInCalendarDays(parseISO(deal.expectedClose), today);
+          const lead = users.find(u => u.name === deal.leadContact);
+          return (
+            <div key={deal.id} className="bg-muted rounded-lg shadow p-6 flex flex-col justify-between">
+              <div>
+                <div className="text-lg font-semibold mb-1">{deal.name}</div>
+                <div className="text-sm text-muted-foreground mb-2">{deal.address}</div>
+                <div className="flex gap-2 mb-2">
+                  <Badge>{deal.type}</Badge>
+                  <Badge variant="secondary">{deal.status}</Badge>
                 </div>
-              </DropdownMenuItem>
-              <DropdownMenuItem>Lead Contact: Sarah Johnson, Robert Kim, etc.</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {mockDeals.map((deal) => (
-            <DealCard
-              key={deal.id}
-              deal={deal}
-              onClick={() => window.location.href = `/deals/${deal.id}`}
-            />
-          ))}
-        </div>
+                <div className="text-sm mb-2">Value: <span className="font-medium">${deal.value.toLocaleString()}</span></div>
+                <div className="text-sm mb-2">Days to Close: <span className="font-medium">{daysToClose}</span></div>
+                <div className="flex items-center gap-2 mb-2">
+                  <Avatar name={lead?.name || deal.leadContact} size="xs" />
+                  <span className="text-sm">Lead: {deal.leadContact}</span>
+                </div>
+                <div className="text-sm mb-2">Task Progress: <span className="font-medium">{completed}/{dealTasks.length}</span> tasks complete</div>
+              </div>
+              <Button className="mt-4 w-full" variant="outline">View Deal Workspace</Button>
+            </div>
+          );
+        })}
       </div>
-    </AppLayout>
+    </div>
   );
 };
 
